@@ -10,7 +10,8 @@ import foo from "foo"
 import fs from "fs";
 
 type A = string; // It is typescript
-`
+`,
+            "index.ts"
         );
         let filterd = filterModulesByBuiltinModules(result);
         assert.deepStrictEqual(filterd, [
@@ -51,7 +52,8 @@ import assert from 'node:assert'
 import fs from "fs";
 
 type A = string; // It is typescript
-`
+`,
+            "index.ts"
         );
         assert.deepStrictEqual(result, [
             {
@@ -91,7 +93,8 @@ import { foo } from 'bar1'
 import { foo } from "bar2";
 
 type A = string; // It is typescript
-`
+`,
+            "index.ts"
         );
         assert.deepStrictEqual(result, [
             {

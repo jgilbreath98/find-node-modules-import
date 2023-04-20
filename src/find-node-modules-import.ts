@@ -1,4 +1,4 @@
-import { init, parse } from "es-module-lexer";
+import { parse } from "rs-module-lexer";
 import { StructuredSource } from "structured-source";
 // @ts-expect-error: no types
 import { isBuiltin } from "node:module";
@@ -10,17 +10,20 @@ export type FindNodeModulesImportResult = {
         start: { line: number; column: number };
         end: { line: number; column: number };
     }>;
+    statementrange?: readonly [start: number, end: number];
 };
 
-export async function findNodeModulesImport(code: string): Promise<FindNodeModulesImportResult[]> {
-    await init;
-    const [imports] = parse(code);
+export async function findNodeModulesImport(code: string, filename: string): Promise<FindNodeModulesImportResult[]> {
+    const { output } = parse({ input: [{ filename: filename, code }] });
+    const { imports } = output[0];
     const source = new StructuredSource(code);
+    // console.log(imports);
     return imports.map((imp) => {
         return {
-            name: code.slice(imp.s, imp.e),
+            name: imp.n ?? code.slice(imp.s, imp.e),
             range: [imp.s, imp.e] as const,
-            loc: source.rangeToLocation([imp.s, imp.e])
+            loc: source.rangeToLocation([imp.s, imp.e]),
+            statementrange: [imp.ss, imp.se] as const
         };
     });
 }

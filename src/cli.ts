@@ -7,10 +7,11 @@ import {
 } from "./find-node-modules-import.js";
 import { globby } from "globby";
 import * as fs from "node:fs/promises";
+import path from "node:path";
 
 export const cli = meow(
     `
-    Usage
+    Usage WAHAWHwh
       $ find-node-modules-import [file|glob*]
  
     Options
@@ -68,7 +69,7 @@ export const run = async (
     for (const file of files) {
         try {
             const code = await fs.readFile(file, "utf-8");
-            const modules = await findNodeModulesImport(code);
+            const modules = await findNodeModulesImport(code, path.basename(file));
             filter(modules).forEach((result) => {
                 console.log(`${file}:${result.loc.start.line}:${result.loc.start.column}\t${result.name}`);
             });
